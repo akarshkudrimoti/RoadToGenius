@@ -1,0 +1,50 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+    char board[8][8];
+    vector<pair<int, int>> queens;
+
+    // Input the 8x8 board
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            cin >> board[i][j];
+            if (board[i][j] == '*') {
+                queens.push_back({i, j});
+            }
+        }
+    }
+
+    // Check if there are exactly 8 queens
+    if (queens.size() != 8) {
+        cout << "invalid" << endl;
+        return 0;
+    }
+
+    // Check for attacks
+    for (size_t i = 0; i < queens.size(); i++) {
+        for (size_t j = i + 1; j < queens.size(); j++) {
+            int row1 = queens[i].first;
+            int col1 = queens[i].second;
+            int row2 = queens[j].first;
+            int col2 = queens[j].second;
+
+            // Check if they are in the same row or column
+            if (row1 == row2 || col1 == col2) {
+                cout << "invalid" << endl;
+                return 0;
+            }
+
+            // Check if they are on the same diagonal
+            if (abs(row1 - row2) == abs(col1 - col2)) {
+                cout << "invalid" << endl;
+                return 0;
+            }
+        }
+    }
+
+    // If no queens can attack each other, the solution is valid
+    cout << "valid" << endl;
+
+    return 0;
+}
