@@ -1,0 +1,69 @@
+#include <bits/stdc++.h> // Includes all standard libraries
+
+using namespace std;
+
+#define ar array
+#define ll long long
+
+int main() {
+    string inputLine;
+    // Array representing calories per gram for fat, protein, sugar, starch, alcohol respectively
+    double caloriesPerGram[5] = {9, 4, 4, 4, 7};
+
+    while (true) {        
+        getline(cin, inputLine); // Get the first line of the test case
+        if (inputLine == "-") break; // Exit if the line is a single hyphen (end of input)
+        
+        double totalCalories = 0;
+        double totalFatCalories = 0;
+
+        while (true) {
+            istringstream inputStream(inputLine); // Create a string stream to process the input line
+            string nutrientValues[5];
+            
+            // Read all five nutrient values (fat, protein, sugar, starch, alcohol)
+            inputStream >> nutrientValues[0] >> nutrientValues[1] >> nutrientValues[2] >> nutrientValues[3] >> nutrientValues[4];
+            
+            double percentageSum = 0;
+            double currentCalories = 0;
+
+            // Process each nutrient to calculate total calories and percentage of calories
+            for (int i = 0; i < 5; i++) {
+                string nutrient = nutrientValues[i];
+                char unit = nutrient[nutrient.size() - 1]; // Last character indicates the unit
+                double value = stoi(nutrient.substr(0, nutrient.size() - 1)); // Extract the numerical value
+                
+                if (unit == '%') {
+                    percentageSum += value; // Accumulate percentage values
+                } else if (unit == 'g') {
+                    currentCalories += (value * caloriesPerGram[i]); // Convert grams to calories
+                } else {
+                    currentCalories += value; // If unit is 'C', add directly as calories
+                }
+            }
+
+            // Adjust calories based on the percentage sum if percentages were given
+            currentCalories = (100) / (100 - percentageSum) * currentCalories;
+            totalCalories += currentCalories;
+
+            // Handle fat-specific calculations
+            string fatNutrient = nutrientValues[0];
+            char fatUnit = fatNutrient[fatNutrient.size() - 1];
+            double fatValue = stoi(fatNutrient.substr(0, fatNutrient.size() - 1));
+
+            if (fatUnit == '%') {
+                totalFatCalories += (currentCalories * fatValue / 100);
+            } else if (fatUnit == 'g') {
+                totalFatCalories += (fatValue * caloriesPerGram[0]); // Convert fat grams to calories
+            } else {
+                totalFatCalories += fatValue; // Add directly if unit is 'C'
+            }
+
+            getline(cin, inputLine); // Get the next line
+            if (inputLine == "-") break; // Exit loop if line is a single hyphen
+        }
+
+        // Calculate and output the percentage of calories from fat, rounded to the nearest integer
+        cout << (round(totalFatCalories / totalCalories * 100)) << "%" << endl;
+    }
+}
